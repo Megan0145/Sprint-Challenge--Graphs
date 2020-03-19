@@ -31,11 +31,15 @@ player = Player(world.starting_room)
 # Step 1: initialise graph 
 graph = {}
 
-# add the first room the player is in to graph with the id as the key and a dictionary to hold the rooms to the north, south, east and west
-# this will initally take the form of: { 0: {'n': '?', 's': '?', 'w': '?', 'e': '?'} }, since we don't know the ids of the rooms to the n, s, e and w yet (if they exist)
-graph[player.current_room.id] = {'n': '?', 's': '?', 'w': '?', 'e': '?'}
+# Add the first room the player is in to graph with the room id as the key and an empty dictionary to hold key-value pairs for every possible exit. 
+graph[player.current_room.id] = {}
 
-
+# For every possible exit from the starting room, add a key-value pair to the starting room dictionary with the exit as the key and a '?' as the value since we 
+# don't know the id of the room through each possible exit just yet. 
+# For example: if possible exits for the starting room = ['n', 's', 'e', 'w'], then graph will initally be { 0: {'n': '?', 's': '?', 'w': '?', 'e': '?'} }
+for exit in player.current_room.get_exits():
+    graph[player.current_room.id][exit] = '?'
+   
 
 # TRAVERSAL TEST
 # visited_rooms = set()
