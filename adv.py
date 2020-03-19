@@ -26,7 +26,7 @@ world.print_rooms()
 player = Player(world.starting_room)
 
 # Fill this out with directions to walk
-# traversal_path = ['n', 'n']
+traversal_path = []
 
 # Step 1: initialise graph 
 graph = {}
@@ -40,6 +40,17 @@ graph[player.current_room.id] = {}
 for exit in player.current_room.get_exits():
     graph[player.current_room.id][exit] = '?'
    
+# Step 2: Add function to get unexplored paths from player's current room
+def get_unexplored_paths(room):
+    for exit in room:
+        if room[exit] == '?':
+            print(f'exit {exit} is unexplored')    
+            return exit
+        else:
+            print(f'exit {exit} is explored') 
+            return None   
+
+get_unexplored_paths(graph[player.current_room.id])
 
 # TRAVERSAL TEST
 # visited_rooms = set()
