@@ -50,7 +50,15 @@ def get_unexplored_paths(room):
             print(f'exit {exit} is explored') 
             return None   
 
-get_unexplored_paths(graph[player.current_room.id])
+# Step 3: Add helper function that returns whether there are still rooms in the graph that have not been visited.
+# This can be found by looping over the graph dictionary. For every room in the graph, if the dictionary holding the exits for that room contains a '?', then there are still 
+# paths left unexplored in the graph
+def unexplored_paths_exist(graph):
+    for room in graph:
+        if '?' in graph[room].values():
+            return True
+        else: False
+
 
 # TRAVERSAL TEST
 # visited_rooms = set()
