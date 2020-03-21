@@ -138,10 +138,9 @@ while len(world.rooms) > len(graph):
                     direction = convert_ids_to_directions(path[i], path[i + 1])
                     # append the result to the directions list
                     directions.append(direction)
-                # then for every direction in directions list..
-                for d in directions: 
-                    # make the player travel in that direction
-                    player.travel(d)
+                
+                # set the player's current room equal to the room with the id of the last room id in path list 
+                player.current_room = world.rooms[path[-1]]
 
                 # finally extend the traversal path list with the directions in directions list     
                 traversal_path.extend(directions)
