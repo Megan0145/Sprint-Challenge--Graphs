@@ -29,31 +29,38 @@ player = Player(world.starting_room)
 # Fill this out with directions to walk
 traversal_path = []
 
-# Step 1: initialise graph 
+# STEP 1: initialise graph to be an empty dictionary
 graph = {}
-
-# Add the first room the player is in to graph with the room id as the key and an empty dictionary to hold key-value pairs for every possible exit. 
-graph[player.current_room.id] = {}
-
-# For every possible exit from the starting room, add a key-value pair to the starting room dictionary with the exit as the key and a '?' as the value since we 
-# don't know the id of the room through each possible exit just yet. 
-# For example: if possible exits for the starting room = ['n', 's', 'e', 'w'], then graph will initally be { 0: {'n': '?', 's': '?', 'w': '?', 'e': '?'} }
-for exit in player.current_room.get_exits():
-    graph[player.current_room.id][exit] = '?'
    
-# Step 2: Add function to get unexplored paths from player's current room
+# STEP 2: Add helper functions:
+# Function to add a room to the graph 
+def add_room_to_graph(room):
+    # add a key-value pair to the graph with the id of the room as the key and an empty dictionary as the value
+    graph[room.id] = {}
+    # get all possible exits for the room. For every exit..
+    for exit in room.get_exits():
+        # add key-value pair to the room dictionary with the exit as the key and a '?' as the value since we dont know the id of the room through that exit just yet
+        graph[room.id][exit] = '?'
+ 
+# Function to get unexplored paths from a room
 def get_unexplored_paths(room):
+    # Initialise the direction to be None
     direction = None
+    # For every exit in the room..
     for exit in room:
+        # If the value is '?' at the index of that exit we know that this is an unexplored path
         if room[exit] == '?':
+           # Set direction equal to the exit and break out of function
            direction = exit
            break
+    # Return the direction    
     return direction       
 
-reverse_directions = { 'n': 's', 's': 'n', 'e': 'w', 'w': 'e' }
-
+# Function to convert the ids in the path list returned from the breadth-first search to directions
 def convert_ids_to_directions(room_id_1, room_id_2):
+    # Check if the room at the index of room_id_1 in the graph has an 's' exit. If so check if the value of the 's' exit is equal to room_id_2..
     if graph[room_id_1].get('s') is not None and graph[room_id_1].get('s') == room_id_2:
+        # If so return 's'
         return 's'
     if graph[room_id_1].get('n') is not None and graph[room_id_1].get('n') == room_id_2:  
         return 'n'  
@@ -62,7 +69,13 @@ def convert_ids_to_directions(room_id_1, room_id_2):
     if graph[room_id_1].get('e') is not None and graph[room_id_1].get('e') == room_id_2:  
         return 'e'     
 
-# Step 4: While the graph is unexplored we want to continue traversing it:
+# STEP 3: Call add_room_to_graph helper function passing in the players current room to initalise graph to hold the player's starting room  
+add_room_to_graph(player.current_room)
+
+# Add dictionary containing the reverse direction for every direction to be used in traversal of rooms
+reverse_directions = { 'n': 's', 's': 'n', 'e': 'w', 'w': 'e' }
+
+# STEP 4: While the graph is unexplored we want to continue traversing it:
 while len(world.rooms) > len(graph):
     # save current room in variable
     current_room = player.current_room
@@ -75,16 +88,14 @@ while len(world.rooms) > len(graph):
         graph[current_room.id][direction] = next_room.id
         # check if next room is already in graph and if not add it..
         if not next_room.id in graph:
-            graph[next_room.id] = {}
-            # get exits for next room, initialise to '?'
-            for exit in next_room.get_exits():
-                graph[next_room.id][exit] = '?'
+            add_room_to_graph(next_room)
         # add current room id in the reverse direction of where you have to go to get to the next room
         graph[next_room.id][reverse_directions[direction]] = current_room.id
         # travel there
         player.travel(direction)  
         # and add the direction to the traversal_path
         traversal_path.append(direction)
+    
     # else we have reached a dead end - we're in a room that has no unexplored paths and need to perform a bfs to find the nearest room with unexplored paths
     else:   
         # initialise the queue
@@ -101,7 +112,7 @@ while len(world.rooms) > len(graph):
             room_id = path[-1]       
             # check if there are any unexplored paths to visit in current room
             direction = get_unexplored_paths(graph[room_id])
-            # if it returns None then we are in a room with no unexplored paths ...
+            # if it returns None then we are in a room with no unexplored paths and want to continue the bfs...
             if direction is None:
                 # if the room hasn't already been visited, add it to the visited set
                 if room_id not in visited:
