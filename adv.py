@@ -74,7 +74,7 @@ add_room_to_graph(player.current_room)
 # Add dictionary containing the reverse direction for every direction to be used in traversal of rooms
 reverse_directions = { 'n': 's', 's': 'n', 'e': 'w', 'w': 'e' }
 
-# STEP 4: While the graph is unexplored we want to continue traversing it:
+# STEP 4: While the graph does not contain an entry for every room in the world rooms dictionary:
 while len(world.rooms) > len(graph):
     # save current room in variable
     current_room = player.current_room
