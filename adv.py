@@ -50,9 +50,8 @@ def get_unexplored_paths(room):
     for exit in room:
         # If the value is '?' at the index of that exit we know that this is an unexplored path
         if room[exit] == '?':
-           # Set direction equal to the exit and break out of function
+           # Set direction equal to the exit 
            direction = exit
-           break
     # Return the direction    
     return direction       
 
@@ -162,7 +161,6 @@ if len(visited_rooms) == len(room_graph):
 else:
     print("TESTS FAILED: INCOMPLETE TRAVERSAL")
     print(f'{len(room_graph) - len(visited_rooms)} unvisited rooms')
-
 
 
 #######
