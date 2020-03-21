@@ -52,6 +52,16 @@ def get_unexplored_paths(room):
 
 reverse_directions = { 'n': 's', 's': 'n', 'e': 'w', 'w': 'e' }
 
+def convert_ids_to_directions(room_id_1, room_id_2):
+    if graph[room_id_1].get('s') is not None and graph[room_id_1].get('s') == room_id_2:
+        return 's'
+    if graph[room_id_1].get('n') is not None and graph[room_id_1].get('n') == room_id_2:  
+        return 'n'  
+    if graph[room_id_1].get('w') is not None and graph[room_id_1].get('w') == room_id_2: 
+        return 'w'  
+    if graph[room_id_1].get('e') is not None and graph[room_id_1].get('e') == room_id_2:  
+        return 'e'     
+
 # Step 4: While the graph is unexplored we want to continue traversing it:
 while len(world.rooms) > len(graph):
     # save current room in variable
@@ -111,30 +121,18 @@ while len(world.rooms) > len(graph):
                 # we want to break out of bfs but first will need to convert room ids in path to directions:
                 # declare empty list to hold directions  
                 directions = []       
-                # loop in range 1 to the length of the path 
+                # loop in range 0 to the length of the path -1
                 for i in range(0, len(path) - 1):
-                    # if the room in the graph dictionary with the id of the current value of i has a room to the south with id of the room id at i + 1..
-                    if graph[path[i]].get('s') is not None and graph[path[i]].get('s') == path[i + 1]:
-                        # append 's' to directions list
-                        directions.append('s')
-                    # if the room in the graph dictionary with the id of the current value of i has a room to the east with id of the room id at i + 1..    
-                    if graph[path[i]].get('e') is not None and graph[path[i]].get('e') == path[i + 1]:
-                        # append 'e' to directions list
-                        directions.append('e')  
-                    # if the room in the graph dictionary with the id of the current value of i has a room to the west with id of the room id at i + 1..     
-                    if graph[path[i]].get('w') is not None and graph[path[i]].get('w') == path[i + 1]:
-                        # append 'w' to directions list
-                        directions.append('w') 
-                    # if the room in the graph dictionary with the id of the current value of i has a room to the north with id of the room id at i + 1..     
-                    if graph[path[i]].get('n') is not None and graph[path[i]].get('n') == path[i + 1]:
-                        # append 'n' to directions list
-                        directions.append('n')  
-                # for every direction in directions list..
+                    # pass the value of the path at index i and the value of the path at index i + 1 into convert_ids_to_directions helper function
+                    direction = convert_ids_to_directions(path[i], path[i + 1])
+                    # append the result to the directions list
+                    directions.append(direction)
+                # then for every direction in directions list..
                 for d in directions: 
-                    # travel in that direction
+                    # make the player travel in that direction
                     player.travel(d)
 
-                # extend the traversal path list with the direcitons directions list     
+                # finally extend the traversal path list with the directions in directions list     
                 traversal_path.extend(directions)
                 # break out of bfs 
                 break                     
